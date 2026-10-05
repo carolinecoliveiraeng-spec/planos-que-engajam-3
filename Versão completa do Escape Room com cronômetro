@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Plano Perdido | Escape Room Pedagógico</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --navy:#12384c;
+  --navy2:#081f2b;
+  --coral:#c97859;
+  --sage:#819b78;
+  --mustard:#d3a536;
+  --cream:#fffdf8;
+  --warm:#f7f1e7;
+  --yellow:#f7e8b7;
+  --green:#e4eee4;
+  --blue:#e8edf1;
+  --red:#f5e5dc;
+  --text:#25343c;
+  --muted:#66777f;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at top,#1c5069 0%,var(--navy2) 48%,#04131b 100%);
+  color:var(--cream);
+  min-height:100vh;
+}
+
+button,input{font:inherit}
+
+button:focus,input:focus{
+  outline:3px solid rgba(211,165,54,.45);
+  outline-offset:3px;
+}
+
+/* ---------- TELAS ---------- */
+
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:70px 20px 50px;
+  align-items:center;
+  justify-content:center;
+}
+
+.screen.active{display:flex}
+
+.container{
+  width:100%;
+  max-width:1050px;
+  margin:auto;
+}
+
+.panel{
+  background:var(--cream);
+  color:var(--text);
+  border-radius:22px;
+  padding:42px;
+  box-shadow:0 25px 70px rgba(0,0,0,.35);
+}
+
+.center{text-align:center}
+
+h1,h2,h3,h4{
+  font-family:Georgia,"Times New Roman",serif;
+}
+
+h1{
+  font-size:clamp(44px,8vw,78px);
+  line-height:.95;
+  margin-bottom:14px;
+}
+
+h2{
+  color:var(--navy);
+  font-size:clamp(30px,5vw,46px);
+  margin-bottom:20px;
+}
+
+h3{
+  color:var(--navy);
+  margin-bottom:12px;
+}
+
+h4{
+  color:var(--navy);
+  margin-bottom:8px;
+}
+
+p{
+  line-height:1.7;
+  margin-bottom:15px;
+}
+
+.lead{
+  font-size:18px;
+  line-height:1.75;
+}
+
+.small{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.badge{
+  display:inline-block;
+  background:var(--mustard);
+  color:var(--navy);
+  padding:8px 15px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+  letter-spacing:1.4px;
+  margin-bottom:22px;
+}
+
+.subtitle{
+  color:var(--mustard);
+  letter-spacing:4px;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:30px;
+}
+
+.lock{
+  font-size:58px;
+  margin-bottom:18px;
+}
+
+/* ---------- BOTÕES ---------- */
+
+.btn{
+  border:0;
+  background:var(--coral);
+  color:white;
+  font-weight:bold;
+  padding:15px 24px;
+  min-height:48px;
+  border-radius:10px;
+  cursor:pointer;
+  margin:8px 5px 0;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.05);
+}
+
+.btn.secondary{background:var(--navy)}
+.btn.sage{background:var(--sage)}
+.btn.mustard{background:var(--mustard);color:var(--navy)}
+
+/* ---------- CAIXAS ---------- */
+
+.box{
+  padding:22px;
+  border-radius:14px;
+  margin:22px 0;
+}
+
+.box.blue{background:var(--blue)}
+.box.yellow{background:var(--yellow)}
+.box.green{background:var(--green)}
+.box.red{background:var(--red)}
+.box.warm{background:var(--warm)}
+
+.alert{
+  border-left:6px solid var(--coral);
+}
+
+.system{
+  font-family:"Courier New",monospace;
+  background:#071a24;
+  color:#dbe8ed;
+  padding:22px;
+  border-radius:12px;
+  margin:22px 0;
+  line-height:1.7;
+}
+
+.system .ok{color:#a9d39f}
+.system .warning{color:#f0c35a}
+.system .danger{color:#ef9d83}
+
+/* ---------- GRID/CARDS ---------- */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  margin:25px 0;
+}
+
+.card{
+  border:2px solid #e0e5e6;
+  border-radius:14px;
+  padding:22px;
+  background:#fff;
+  min-width:0;
+}
+
+.card.clickable{
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card.clickable:hover{
+  border-color:var(--mustard);
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.card.selected{
+  border-color:var(--mustard);
+  background:var(--yellow);
+}
+
+.card.correct-card{
+  border-color:var(--sage);
+  background:var(--green);
+}
+
+.card-number{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  background:var(--navy);
+  color:white;
+  border-radius:50%;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.file-code{
+  font-family:"Courier New",monospace;
+  color:var(--coral);
+  font-weight:bold;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+/* ---------- FLUXOS ---------- */
+
+.flow{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:25px 0;
+  font-weight:bold;
+  color:var(--navy);
+}
+
+.flow span{
+  background:var(--blue);
+  padding:10px 14px;
+  border-radius:8px;
+}
+
+.arrow{
+  color:var(--coral);
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* ---------- PROGRESSO ---------- */
+
+.progress-wrap{
+  margin-bottom:28px;
+  text-align:center;
+}
+
+.progress-label{
+  font-size:12px;
+  font-weight:bold;
+  letter-spacing:1px;
+  color:#60717a;
+  margin-bottom:8px;
+}
+
+.progress{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+
+.progress span{
+  width:32px;
+  height:8px;
+  border-radius:5px;
+  background:#d8dedf;
+}
+
+.progress span.done{background:var(--sage)}
+
+/* ---------- FEEDBACK ---------- */
+
+.feedback{
+  display:none;
+  margin-top:22px;
+  padding:22px;
+  border-radius:14px;
+}
+
+.feedback.show{display:block}
+
+.feedback.error{
+  background:var(--red);
+  border-left:6px solid var(--coral);
+}
+
+.feedback.success{
+  background:var(--green);
+  border-left:6px solid var(--sage);
+}
+
+.hidden{display:none!important}
+
+/* ---------- CHAVES ---------- */
+
+.key-box{
+  background:var(--navy);
+  color:white;
+  text-align:center;
+  padding:28px;
+  border-radius:16px;
+  margin:30px 0;
+}
+
+.key-box strong{
+  display:block;
+  font-family:Georgia,serif;
+  color:var(--mustard);
+  font-size:31px;
+  margin-top:10px;
+}
+
+.inventory{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:25px 0;
+}
+
+.key{
+  padding:10px 13px;
+  border-radius:8px;
+  background:#e4e8e9;
+  color:#6b777c;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.key.recovered{
+  background:var(--yellow);
+  color:var(--navy);
+}
+
+/* ---------- CRONÔMETRO ---------- */
+
+#gameTimer{
+  display:none;
+  position:fixed;
+  top:14px;
+  right:18px;
+  z-index:999;
+  background:#071a24;
+  color:white;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:12px;
+  padding:10px 16px;
+  box-shadow:0 8px 22px rgba(0,0,0,.25);
+  min-width:150px;
+  text-align:center;
+}
+
+#gameTimer.visible{display:block}
+
+#gameTimer small{
+  display:block;
+  font-size:9px;
+  letter-spacing:1.4px;
+  color:#b9c9d1;
+  margin-bottom:3px;
+}
+
+#timerValue{
+  font-family:"Courier New",monospace;
+  font-weight:bold;
+  font-size:24px;
+  color:var(--mustard);
+}
+
+#gameTimer.warning{
+  border-color:var(--mustard);
+}
+
+#gameTimer.urgent{
+  background:#632b25;
+  border-color:#ef9d83;
+}
+
+#gameTimer.urgent #timerValue{
+  color:#fff;
+}
+
+#gameTimer.expired{
+  background:#3f2525;
+}
+
+#gameTimer.expired #timerValue{
+  font-size:15px;
+  letter-spacing:.5px;
+  color:#fff;
+}
+
+/* ---------- ABERTURA ---------- */
+
+#opening .container{
+  max-width:800px;
+  text-align:center;
+}
+
+.opening-story{
+  max-width:690px;
+  margin:25px auto;
+  font-size:18px;
+  line-height:1.8;
+  color:#e8eef1;
+}
+
+.time-preview{
+  margin:30px auto;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:14px;
+  padding:20px;
+  max-width:400px;
+}
+
+.time-preview small{
+  display:block;
+  letter-spacing:2px;
+  margin-bottom:8px;
+  color:#b9c9d1;
+}
+
+.time-preview strong{
+  font-family:Georgia,serif;
+  font-size:30px;
+  color:var(--mustard);
+}
+
+.footer{
+  text-align:center;
+  margin-top:35px;
+  font-size:11px;
+  letter-spacing:2px;
+  opacity:.65;
+}
+
+/* ---------- CÓDIGOS ---------- */
+
+.code-area{
+  text-align:center;
+  margin:30px 0;
+}
+
+.code-input{
+  width:180px;
+  max-width:100%;
+  padding:15px;
+  text-align:center;
+  font-size:27px;
+  font-weight:bold;
+  letter-spacing:8px;
+  border:2px solid var(--navy);
+  border-radius:10px;
+  color:var(--navy);
+}
+
+/* ---------- SALA 3 REPARAÇÃO ---------- */
+
+.repair-group{
+  background:var(--warm);
+  padding:20px;
+  border-radius:14px;
+  margin:18px 0;
+}
+
+.option{
+  width:100%;
+  text-align:left;
+  border:2px solid #dde3e4;
+  background:white;
+  color:var(--text);
+  padding:15px;
+  border-radius:10px;
+  margin:7px 0;
+  cursor:pointer;
+  line-height:1.5;
+}
+
+.option:hover{border-color:var(--mustard)}
+
+.option.selected{
+  border-color:var(--mustard);
+  background:var(--yellow);
+}
+
+/* ---------- SALA 5 ---------- */
+
+.order-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:25px 0;
+}
+
+.order-item{
+  background:var(--blue);
+  border:2px solid transparent;
+  padding:17px;
+  border-radius:12px;
+  cursor:pointer;
+  line-height:1.55;
+}
+
+.order-item:hover{border-color:var(--mustard)}
+
+.order-item.selected{
+  background:var(--yellow);
+  border-color:var(--mustard);
+}
+
+.sequence-result{
+  min-height:65px;
+  padding:16px;
+  background:var(--warm);
+  border-radius:10px;
+  margin:15px 0;
+  line-height:1.8;
+}
+
+/* ---------- FINAL ---------- */
+
+.final-keys{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+  margin:30px 0;
+}
+
+.final-key{
+  background:var(--navy);
+  color:white;
+  border-radius:12px;
+  padding:20px 8px;
+  text-align:center;
+  font-weight:bold;
+  font-size:12px;
+}
+
+.big-reveal{
+  font-family:Georgia,serif;
+  font-size:clamp(28px,5vw,48px);
+  color:var(--navy);
+  text-align:center;
+  line-height:1.25;
+  margin:35px 0;
+}
+
+.restore-bar{
+  height:16px;
+  background:#dce2e4;
+  border-radius:999px;
+  overflow:hidden;
+  margin:15px 0;
+}
+
+.restore-fill{
+  width:0;
+  height:100%;
+  background:var(--sage);
+  transition:width 1.6s ease;
+}
+
+.final-time{
+  font-family:"Courier New",monospace;
+  font-size:22px;
+  font-weight:bold;
+  color:var(--navy);
+}
+
+/* ---------- RESPONSIVO ---------- */
+
+@media(max-width:760px){
+  .screen{padding:78px 14px 35px}
+  .panel{padding:28px 20px}
+  .grid{grid-template-columns:1fr}
+  .final-keys{grid-template-columns:1fr}
+  #gameTimer{
+    top:8px;
+    right:8px;
+    min-width:125px;
+    padding:8px 10px;
+  }
+  #timerValue{font-size:20px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- CRONÔMETRO -->
+<div id="gameTimer" aria-live="polite">
+  <small>TEMPO RESTANTE</small>
+  <div id="timerValue">30:00</div>
+</div>
+
+<!-- =====================================================
+     ABERTURA
+===================================================== -->
+
+<section id="opening" class="screen active">
+  <div class="container">
+
+    <div class="badge">ARQUIVO CONFIDENCIAL · ACESSO RESTRITO</div>
+
+    <div class="lock">🔐</div>
+
+    <h1>O PLANO<br>PERDIDO</h1>
+
+    <div class="subtitle">ESCAPE ROOM PEDAGÓGICO</div>
+
+    <div class="opening-story">
+      Um planejamento foi recuperado poucas horas antes do início de uma aula.
+      <br><br>
+      O arquivo parece completo: há objetivos, atividades, tecnologias,
+      metodologias e avaliação.
+      <br><br>
+      Mas alguma coisa aconteceu.
+      <br><br>
+      Os elementos foram fragmentados e ninguém consegue explicar como
+      eles se conectam à aprendizagem.
+      <br><br>
+      <strong>Sua missão é reconstruir o plano antes que o tempo termine.</strong>
+    </div>
+
+    <div class="time-preview">
+      <small>TEMPO DISPONÍVEL PARA A MISSÃO</small>
+      <strong>30 MINUTOS</strong>
+      <p class="small" style="color:#d5e0e5;margin-top:8px;margin-bottom:0;">
+        O cronômetro será iniciado quando você aceitar a missão.
+      </p>
+    </div>
+
+    <button class="btn mustard" onclick="startMission()">
+      INICIAR MISSÃO →
+    </button>
+
+    <div class="footer">
+      PLANOS QUE ENGAJAM · MISSÃO PEDAGÓGICA
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================
+     MISSÃO
+===================================================== -->
+
+<section id="mission" class="screen">
+  <div class="container">
+    <div class="panel center">
+
+      <div class="badge">MISSÃO RECEBIDA</div>
+
+      <h2>Cinco fragmentos precisam ser recuperados.</h2>
+
+      <p class="lead">
+        Para reconstruir o planejamento, você precisará atravessar cinco salas.
+      </p>
+
+      <div class="box blue">
+        <strong>SALA 1 · O OBJETIVO PERDIDO</strong><br><br>
+        ↓<br><br>
+        <strong>SALA 2 · AS EVIDÊNCIAS ESCONDIDAS</strong><br><br>
+        ↓<br><br>
+        <strong>SALA 3 · O LABORATÓRIO DAS METODOLOGIAS</strong><br><br>
+        ↓<br><br>
+        <strong>SALA 4 · A COLABORAÇÃO SABOTADA</strong><br><br>
+        ↓<br><br>
+        <strong>SALA 5 · O PLANO FRAGMENTADO</strong>
+      </div>
+
+      <div class="box red alert">
+        <strong>⚠ ATENÇÃO</strong>
+        <p>
+          Nenhuma porta será aberta por sorte.
+          Cada desafio exigirá que você analise uma decisão pedagógica.
+        </p>
+        <p>
+          <strong>
+            Para abrir uma porta, será necessário compreender alguma coisa —
+            não apenas descobrir uma senha.
+          </strong>
+        </p>
+      </div>
+
+      <h3>PRIMEIRO DESTINO</h3>
+      <p>🔐 SALA 1 · O OBJETIVO PERDIDO</p>
+
+      <button class="btn" onclick="goTo('room1')">
+        ACESSAR SALA 1 →
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SALA 1
+===================================================== -->
+
+<section id="room1" class="screen">
+  <div class="container">
+    <div class="panel">
+
+      <div class="progress-wrap">
+        <div class="progress-label">FRAGMENTOS RECUPERADOS</div>
+        <div class="progress">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="badge">SALA 1 · O OBJETIVO PERDIDO</div>
+
+      <h2>Qual objetivo pode desbloquear o arquivo?</h2>
+
+      <div class="system">
+        <span class="warning">[ARQUIVO PARCIALMENTE RECUPERADO]</span><br>
+        Quatro versões de um objetivo foram encontradas.<br>
+        Apenas uma contém informações suficientes para restaurar o primeiro fragmento.
+      </div>
+
+      <p class="lead">
+        Identifique o objetivo que torna mais claro
+        <strong>o que o estudante deverá ser capaz de demonstrar.</strong>
+      </p>
+
+      <div class="grid">
+
+        <div class="card clickable" onclick="wrongRoom1()">
+          <div class="card-number">1</div>
+          <h3>ARQUIVO 01</h3>
+          <p>Compreender a sustentabilidade e sua importância.</p>
+        </div>
+
+        <div class="card clickable" onclick="wrongRoom1()">
+          <div class="card-number">2</div>
+          <h3>ARQUIVO 02</h3>
+          <p>Conhecer os principais problemas relacionados ao consumo de água.</p>
+        </div>
+
+        <div class="card clickable" onclick="wrongRoom1()">
+          <div class="card-number">3</div>
+          <h3>ARQUIVO 03</h3>
+          <p>Refletir sobre formas de reduzir o desperdício de água.</p>
+        </div>
+
+        <div class="card clickable" onclick="correctRoom1()">
+          <div class="card-number">4</div>
+          <h3>ARQUIVO 04</h3>
+          <p>
+            Analisar diferentes impactos do consumo de água e propor estratégias
+            para reduzir o desperdício, justificando as propostas com base
+            nas informações analisadas.
+          </p>
+        </div>
+
+      </div>
+
+      <div id="r1wrong" class="feedback error">
+        <h3>⚠ FRAGMENTO INCOMPATÍVEL</h3>
+        <p>
+          Este objetivo apresenta uma intenção de aprendizagem, mas ainda não
+          torna suficientemente visível <strong>o que o estudante deverá fazer</strong>
+          para demonstrar essa aprendizagem.
+        </p>
+        <strong>PISTA: observe novamente os verbos utilizados.</strong>
+      </div>
+
+      <div id="r1correct" class="feedback success">
+        <h3>🔓 FRAGMENTO 01 RECUPERADO</h3>
+
+        <p>
+          Um objetivo claro ajuda a tornar visível aquilo que esperamos
+          que o estudante seja capaz de fazer.
+        </p>
+
+        <div class="flow">
+          <span>ANALISAR</span>
+          <div class="arrow">→</div>
+          <span>PROPOR</span>
+          <div class="arrow">→</div>
+          <span>JUSTIFICAR</span>
+        </div>
+
+        <div class="key-box">
+          🔑 CHAVE 01 RECUPERADA
+          <strong>AÇÃO</strong>
+        </div>
+
+        <div class="box yellow">
+          <strong>MENSAGEM ENCONTRADA NO ARQUIVO</strong>
+          <p>
+            “Saber o que esperamos que o estudante faça ainda não é suficiente.
+            Precisamos descobrir <strong>o que poderá demonstrar que ele aprendeu</strong>.”
+          </p>
+        </div>
+
+        <button class="btn" onclick="goTo('room2')">
+          ACESSAR SALA 2 →
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SALA 2
+===================================================== -->
+
+<section id="room2" class="screen">
+  <div class="container">
+    <div class="panel">
+
+      <div class="progress-wrap">
+        <div class="progress-label">FRAGMENTOS RECUPERADOS</div>
+        <div class="progress">
+          <span class="done"></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="badge">SALA 2 · AS EVIDÊNCIAS ESCONDIDAS</div>
+
+      <h2>Nem todo registro demonstra aprendizagem.</h2>
+
+      <div class="system">
+        <span class="warning">[ARQUIVO PARCIALMENTE RECUPERADO]</span><br>
+        O objetivo foi restaurado, mas o sistema perdeu a informação
+        que indicava como verificar se a aprendizagem aconteceu.<br><br>
+        <span class="danger">ATENÇÃO:</span>
+        nem tudo o que o estudante faz constitui evidência suficiente.
+      </div>
+
+      <div class="box blue">
+        <strong>OBJETIVO RECUPERADO</strong>
+        <p>
+          Analisar diferentes impactos do consumo de água e propor estratégias
+          para reduzir o desperdício, justificando as propostas com base
+          nas informações analisadas.
+        </p>
+      </div>
+
+      <p class="lead">
+        Foram encontrados seis registros da aula.
+        <strong>Três deles correspondem às ações escondidas no objetivo.</strong>
+      </p>
+
+      <p><strong>🔐 O cadeado possui três dígitos.</strong></p>
+
+      <div class="grid">
+
+        <div class="card">
+          <div class="card-number">4</div>
+          <h3>Lista de presença</h3>
+          <p>
+            O estudante participou da aula e permaneceu conectado
+            durante toda a atividade.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-number">7</div>
+          <h3>Questionário de memorização</h3>
+          <p>
+            O estudante identificou corretamente a definição
+            de consumo consciente.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-number">2</div>
+          <h3>Análise de dados</h3>
+          <p>
+            O estudante comparou dados de consumo de água em diferentes
+            situações e identificou quais hábitos provocavam maior impacto.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-number">9</div>
+          <h3>Produção final</h3>
+          <p>
+            O estudante propôs duas estratégias para reduzir o desperdício
+            e explicou como cada uma poderia contribuir para o problema analisado.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-number">5</div>
+          <h3>Participação</h3>
+          <p>
+            O estudante realizou todas as atividades propostas durante a aula.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-number">6</div>
+          <h3>Justificativa</h3>
+          <p>
+            O estudante utilizou informações analisadas durante a aula
+            para justificar por que uma das estratégias deveria ser priorizada.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="box yellow">
+        <strong>📄 ANOTAÇÃO ENCONTRADA</strong>
+        <p>
+          “O código não segue a ordem em que os registros foram encontrados.
+          Ele segue o percurso da aprendizagem.”
+        </p>
+
+        <div class="flow">
+          <span>COMPREENDER O PROBLEMA</span>
+          <div class="arrow">→</div>
+          <span>CONSTRUIR UMA RESPOSTA</span>
+          <div class="arrow">→</div>
+          <span>SUSTENTAR A DECISÃO</span>
+        </div>
+      </div>
+
+      <div class="code-area">
+        <p><strong>DIGITE O CÓDIGO:</strong></p>
+        <input id="code2" class="code-input" maxlength="3" inputmode="numeric"
+               aria-label="Código da Sala 2">
+        <br>
+        <button class="btn secondary" onclick="checkRoom2()">
+          DESBLOQUEAR ARQUIVO
+        </button>
+      </div>
+
+      <div id="r2wrong" class="feedback error">
+        <h3>⚠ ACESSO NEGADO</h3>
+        <p>
+          Você encontrou registros da aula, mas alguma evidência não corresponde
+          às ações previstas no objetivo.
+        </p>
+        <p>
+          <strong>PISTA 1:</strong> participar, estar presente ou concluir
+          uma atividade informa algo sobre o envolvimento do estudante —
+          mas isso é suficiente para demonstrar a aprendizagem esperada?
+        </p>
+      </div>
+
+      <div id="r2hint2" class="feedback error">
+        <h3>💡 PISTA 2</h3>
+        <p>Procure três verbos no objetivo.</p>
+        <p>
+          Para cada verbo, pergunte:
+          <strong>“Que produção ou ação do estudante me permitiria observar isso?”</strong>
+        </p>
+      </div>
+
+      <div id="r2correct" class="feedback success">
+        <h3>🔓 ARQUIVO DESCRIPTOGRAFADO</h3>
+
+        <p>
+          Você encontrou as evidências.
+        </p>
+
+        <p>
+          Nem tudo aquilo que o estudante <strong>faz</strong> durante uma aula
+          demonstra necessariamente aquilo que ele <strong>aprendeu</strong>.
+        </p>
+
+        <div class="flow">
+          <span>ANALISAR → ANÁLISE DE DADOS</span>
+          <div class="arrow">→</div>
+          <span>PROPOR → PROPOSTA</span>
+          <div class="arrow">→</div>
+          <span>JUSTIFICAR → JUSTIFICATIVA</span>
+        </div>
+
+        <div class="box green">
+          <strong>DESCOBERTA</strong>
+          <p>
+            Uma evidência de aprendizagem precisa permitir observar algo
+            relacionado à aprendizagem prevista no objetivo.
+          </p>
+        </div>
+
+        <div class="key-box">
+          🔑 CHAVE 02 RECUPERADA
+          <strong>EVIDÊNCIA</strong>
+        </div>
+
+        <div class="system">
+          <span class="warning">[ARQUIVO 03 LOCALIZADO]</span><br>
+          Estratégia pedagógica detectada: GAMIFICAÇÃO.<br>
+          Motivo registrado: “Porque os estudantes gostam.”<br><br>
+          <span class="danger">INCONSISTÊNCIA DETECTADA.</span><br>
+          Uma metodologia foi escolhida.<br>
+          Mas ninguém sabe por quê.
+        </div>
+
+        <button class="btn" onclick="goTo('room3')">
+          ENTRAR NO LABORATÓRIO →
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SALA 3
+===================================================== -->
+
+<section id="room3" class="screen">
+  <div class="container">
+    <div class="panel">
+
+      <div class="progress-wrap">
+        <div class="progress-label">FRAGMENTOS RECUPERADOS</div>
+        <div class="progress">
+          <span class="done"></span><span class="done"></span>
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="badge">SALA 3 · O LABORATÓRIO DAS METODOLOGIAS</div>
+
+      <h2>O caso das metodologias trocadas</h2>
+
+      <div class="system">
+        <span class="danger">[FALHA NO SISTEMA]</span><br>
+        Quatro planejamentos estavam sendo analisados pelo Laboratório
+        de Estratégias Pedagógicas quando ocorreu uma interferência.<br><br>
+        O sistema detectou que <strong>uma das escolhas foi feita
+        pela ferramenta, e não pela aprendizagem.</strong>
+      </div>
+
+      <p class="lead">
+        <strong>
+          Não procure a metodologia mais interessante.
+          Procure a decisão pedagógica que não consegue se justificar.
+        </strong>
+      </p>
+
+      <div class="box yellow">
+        <strong>PROTOCOLO DE INVESTIGAÇÃO</strong>
+        <p>Antes de acusar um experimento, verifique:</p>
+        <p>
+          1. O que o objetivo exige do estudante?<br>
+          2. O que ele realmente faz durante a experiência?<br>
+          3. A estratégia modifica a experiência ou apenas acrescenta elementos externos?<br>
+          4. A evidência permite observar aquilo que estava previsto no objetivo?
+        </p>
+      </div>
+
+      <div class="grid">
+
+        <div class="card clickable" onclick="wrongExperiment()">
+          <div class="file-code">EXPERIMENTO 01 · ARQUIVO 8</div>
+          <h3>Rotação por Estações</h3>
+          <p>
+            <strong>Objetivo:</strong> comparar diferentes interpretações
+            de um acontecimento histórico e identificar aproximações
+            e divergências entre as fontes.
+          </p>
+          <p>
+            <strong>Experiência:</strong> os estudantes passam por estações
+            com fotografia histórica, jornal da época, depoimento
+            e comparação das informações.
+          </p>
+          <p>
+            <strong>Evidência:</strong> quadro comparativo das perspectivas
+            presentes nas fontes.
+          </p>
+        </div>
+
+        <div class="card clickable" onclick="wrongExperiment()">
+          <div class="file-code">EXPERIMENTO 02 · ARQUIVO 3</div>
+          <h3>Aprendizagem Investigativa</h3>
+          <p>
+            <strong>Objetivo:</strong> formular hipóteses para explicar
+            diferenças no crescimento de plantas.
+          </p>
+          <p>
+            <strong>Experiência:</strong> analisar imagens, condições
+            de cultivo, luminosidade, água e dados de crescimento,
+            levantar hipóteses e rever explicações.
+          </p>
+          <p>
+            <strong>Evidência:</strong> hipótese inicial + análise dos dados
+            + explicação final revisada.
+          </p>
+        </div>
+
+        <div class="card clickable" onclick="wrongExperiment()">
+          <div class="file-code">EXPERIMENTO 03 · ARQUIVO 5</div>
+          <h3>Aula Invertida</h3>
+          <p>
+            <strong>Objetivo:</strong> analisar diferentes argumentos
+            sobre o uso de inteligência artificial na educação
+            e construir um posicionamento fundamentado.
+          </p>
+          <p>
+            <strong>Experiência:</strong> antes da aula, os estudantes acessam
+            materiais com perspectivas diferentes. No encontro,
+            comparam argumentos e discutem situações.
+          </p>
+          <p>
+            <strong>Evidência:</strong> posicionamento individual fundamentado.
+          </p>
+        </div>
+
+        <div class="card clickable" onclick="selectSabotaged()">
+          <div class="file-code">EXPERIMENTO 04 · ARQUIVO 7</div>
+          <h3>Gamificação Digital</h3>
+          <p>
+            <strong>Objetivo:</strong> analisar as causas do desperdício
+            de alimentos na escola e propor soluções viáveis.
+          </p>
+          <p>
+            <strong>Experiência:</strong> apresentação do professor seguida
+            de dez perguntas de verdadeiro ou falso. Cada acerto vale
+            100 pontos e os três primeiros recebem medalha virtual.
+          </p>
+          <p>
+            <strong>Evidência:</strong> número de respostas corretas no quiz.
+          </p>
+        </div>
+
+      </div>
+
+      <div id="r3wrong1" class="feedback error">
+        <h3>⚠ EXPERIMENTO COERENTE</h3>
+        <p>
+          Esta estratégia possui relação justificável com as ações esperadas
+          dos estudantes.
+        </p>
+        <strong>Continue investigando.</strong>
+      </div>
+
+      <!-- DIAGNÓSTICO -->
+      <div id="diagnosis" class="hidden">
+
+        <div class="box red">
+          <strong>⚠ INCONSISTÊNCIA LOCALIZADA — ARQUIVO 7</strong>
+
+          <div class="flow">
+            <span>OBJETIVO: ANALISAR + PROPOR</span>
+            <div class="arrow">↔</div>
+            <span>EXPERIÊNCIA: OUVIR + RECORDAR + RESPONDER</span>
+          </div>
+
+          <p>
+            <strong>Evidência:</strong> acertos em um quiz.<br>
+            <strong>Elementos adicionados:</strong> pontos + ranking + medalhas.
+          </p>
+        </div>
+
+        <h3>Por que o experimento foi rejeitado?</h3>
+
+        <div class="grid">
+          <div class="card clickable" onclick="wrongDiagnosis()">
+            Gamificação não deve ser utilizada em conteúdos
+            relacionados à sustentabilidade.
+          </div>
+
+          <div class="card clickable" onclick="wrongDiagnosis()">
+            Toda experiência gamificada precisa utilizar
+            uma narrativa de aventura.
+          </div>
+
+          <div class="card clickable" onclick="correctDiagnosis()">
+            Foram acrescentados pontos, ranking e medalhas,
+            mas a experiência não cria condições para que os estudantes
+            analisem o problema e proponham soluções.
+          </div>
+
+          <div class="card clickable" onclick="wrongDiagnosis()">
+            O problema está no uso de uma plataforma digital
+            para realizar o quiz.
+          </div>
+        </div>
+
+        <div id="diagWrong" class="feedback error">
+          <h3>⚠ DIAGNÓSTICO INCONSISTENTE</h3>
+          <p>
+            Nenhuma metodologia é determinada pelo conteúdo,
+            e nenhuma ferramenta é inadequada apenas por ser digital.
+          </p>
+          <strong>Compare novamente: OBJETIVO ↔ AÇÃO DO ESTUDANTE.</strong>
+        </div>
+
+      </div>
+
+      <!-- REPARAÇÃO -->
+      <div id="repair" class="hidden">
+
+        <div class="box green">
+          <strong>✓ DIAGNÓSTICO ACEITO</strong>
+          <p>
+            Sabemos onde ocorreu a sabotagem.
+            Agora precisamos <strong>restaurar o experimento</strong>.
+          </p>
+        </div>
+
+        <div class="box blue">
+          <strong>OBJETIVO PRESERVADO</strong>
+          <p>
+            Analisar as causas do desperdício de alimentos na escola
+            e propor soluções viáveis para reduzi-lo.
+          </p>
+        </div>
+
+        <h3>FRAGMENTO A · MISSÃO</h3>
+
+        <div class="repair-group" data-group="mission">
+          <button class="option" onclick="chooseRepair('mission',1,this)">
+            1 · Acumular o maior número possível de pontos.
+          </button>
+
+          <button class="option" onclick="chooseRepair('mission',2,this)">
+            2 · Integrar uma equipe responsável por investigar o desperdício
+            de alimentos da escola e apresentar uma solução ao Conselho Escolar.
+          </button>
+
+          <button class="option" onclick="chooseRepair('mission',3,this)">
+            3 · Responder corretamente às perguntas sobre desperdício.
+          </button>
+        </div>
+
+        <h3>FRAGMENTO B · DESAFIO</h3>
+
+        <div class="repair-group" data-group="challenge">
+          <button class="option" onclick="chooseRepair('challenge',1,this)">
+            1 · Memorizar as definições apresentadas pelo professor.
+          </button>
+
+          <button class="option" onclick="chooseRepair('challenge',2,this)">
+            2 · Responder ao quiz mais rapidamente que os colegas.
+          </button>
+
+          <button class="option" onclick="chooseRepair('challenge',3,this)">
+            3 · Analisar dados sobre descarte de alimentos, investigar possíveis
+            causas e decidir quais ações deveriam ser priorizadas.
+          </button>
+        </div>
+
+        <h3>FRAGMENTO C · EVIDÊNCIA</h3>
+
+        <div class="repair-group" data-group="evidence">
+          <button class="option" onclick="chooseRepair('evidence',1,this)">
+            1 · Pontuação obtida.
+          </button>
+
+          <button class="option" onclick="chooseRepair('evidence',2,this)">
+            2 · Quantidade de medalhas conquistadas.
+          </button>
+
+          <button class="option" onclick="chooseRepair('evidence',3,this)">
+            3 · Proposta apresentada e justificativa construída
+            com base nas evidências analisadas.
+          </button>
+        </div>
+
+        <button class="btn secondary" onclick="checkRepair()">
+          RESTAURAR EXPERIMENTO
+        </button>
+
+        <div id="repairWrong" class="feedback error">
+          <h3>⚠ REPARAÇÃO INCOMPLETA</h3>
+          <p>
+            O experimento ainda não cria uma relação coerente entre
+            <strong>objetivo, experiência e evidência</strong>.
+          </p>
+        </div>
+
+        <div id="repairCorrect" class="feedback success">
+          <h3>✓ EXPERIMENTO RECONSTRUÍDO</h3>
+
+          <p>
+            Os fragmentos corretos formaram a sequência:
+            <strong>2 – 3 – 3</strong>.
+          </p>
+
+          <div class="system">
+            <span class="ok">[SEQUÊNCIA PEDAGÓGICA RESTAURADA]</span><br>
+            <span class="danger">[PORTA AINDA BLOQUEADA]</span><br><br>
+            Os números restauraram o experimento,
+            mas a porta do laboratório utiliza
+            <strong>o código do arquivo sabotado</strong>.
+          </div>
+
+          <div class="code-area">
+            <p><strong>QUAL ERA O NÚMERO DO ARQUIVO SABOTADO?</strong></p>
+            <input id="code3" class="code-input" maxlength="1"
+                   inputmode="numeric" aria-label="Código da Sala 3">
+            <br>
+            <button class="btn secondary" onclick="checkRoom3()">
+              DESBLOQUEAR LABORATÓRIO
+            </button>
+          </div>
+
+          <div id="r3codeWrong" class="feedback error">
+            <h3>⚠ CÓDIGO INVÁLIDO</h3>
+            <p>
+              Volte ao início da investigação.
+              Qual arquivo precisou ser reparado?
+            </p>
+          </div>
+
+          <div id="r3success" class="feedback success">
+            <h3>🔓 LABORATÓRIO RESTAURADO</h3>
+
+            <p>
+              A gamificação não foi retirada.
+              Ela foi <strong>redesenhada</strong>.
+            </p>
+
+            <div class="grid">
+              <div class="box red">
+                <h3>ANTES</h3>
+                <p>
+                  Assistir<br>
+                  Memorizar<br>
+                  Quiz<br>
+                  Pontos<br>
+                  Ranking<br>
+                  Medalhas
+                </p>
+              </div>
+
+              <div class="box green">
+                <h3>DEPOIS</h3>
+                <p>
+                  Investigar<br>
+                  Analisar<br>
+                  Desafios<br>
+                  Progressão<br>
+                  Decisões<br>
+                  Feedback
+                </p>
+              </div>
+            </div>
+
+            <div class="box yellow center">
+              <strong>
+                O problema nunca foi utilizar gamificação.
+              </strong>
+              <p>
+                O problema foi começar pelos elementos do jogo
+                em vez da aprendizagem.
+              </p>
+            </div>
+
+            <div class="key-box">
+              🔑 CHAVE 03 RECUPERADA
+              <strong>INTENCIONALIDADE</strong>
+            </div>
+
+            <div class="box blue">
+              <strong>REGISTRO DO LABORATÓRIO</strong>
+              <p>
+                Uma estratégia pedagógica não se justifica pelo nome,
+                pela novidade ou pela ferramenta utilizada.
+              </p>
+              <p>
+                <strong>
+                  “O que esta estratégia acrescenta ao percurso de aprendizagem?”
+                </strong>
+              </p>
+            </div>
+
+            <div class="system">
+              <span class="warning">[ARQUIVO_04B · ACESSO PARCIAL]</span><br><br>
+              PROFESSOR: “Agora vou dividir vocês em grupos.”<br>
+              ESTUDANTE: “O que precisamos fazer?”<br>
+              PROFESSOR: “Conversem sobre o tema durante 20 minutos.
+              Depois escolham alguém para apresentar.”<br><br>
+              <span class="danger">
+                MÚLTIPLOS USUÁRIOS DETECTADOS.<br>
+                COLABORAÇÃO NÃO CONFIRMADA.
+              </span>
+            </div>
+
+            <button class="btn" onclick="goTo('room4')">
+              ACESSAR SALA 4 →
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SALA 4
+===================================================== -->
+
+<section id="room4" class="screen">
+  <div class="container">
+    <div class="panel">
+
+      <div class="progress-wrap">
+        <div class="progress-label">FRAGMENTOS RECUPERADOS</div>
+        <div class="progress">
+          <span class="done"></span><span class="done"></span>
+          <span class="done"></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="badge">SALA 4 · A COLABORAÇÃO SABOTADA</div>
+
+      <h2>Todos estão em grupo. Mas ninguém está colaborando.</h2>
+
+      <div class="system">
+        <span class="warning">[TRANSCRIÇÃO RECUPERADA]</span><br><br>
+        PROFESSOR: “Vou dividir vocês em grupos.
+        Vocês terão 20 minutos para conversar sobre formas de reduzir
+        o desperdício de água.”<br><br>
+        ESTUDANTE 1: “É só conversar?”<br><br>
+        PROFESSOR: “Sim. Depois escolham alguém para contar
+        o que vocês discutiram.”<br><br>
+        ESTUDANTE 2: “Então cada um fala uma ideia?”<br><br>
+        PROFESSOR: “Pode ser.”
+      </div>
+
+      <div class="box red">
+        <strong>DIAGNÓSTICO DO SISTEMA</strong>
+        <p>
+          GRUPO CRIADO: ✓<br>
+          TEMPO DEFINIDO: ✓<br>
+          TEMA DEFINIDO: ✓<br>
+          COLABORAÇÃO: ✕
+        </p>
+      </div>
+
+      <h3>
+        O que está faltando para transformar esse agrupamento
+        em uma experiência realmente colaborativa?
+      </h3>
+
+      <div class="grid">
+
+        <div class="card clickable" onclick="wrongRoom4()">
+          <h3>ARQUIVO 1 · Mais tempo</h3>
+          <p>Aumentar a atividade de 20 para 30 minutos.</p>
+        </div>
+
+        <div class="card clickable" onclick="wrongRoom4()">
+          <h3>ARQUIVO 2 · Mais participantes</h3>
+          <p>Formar grupos maiores para aumentar a quantidade de ideias.</p>
+        </div>
+
+        <div class="card clickable" onclick="correctRoom4()">
+          <h3>ARQUIVO 3 · Uma tarefa que exija decisão conjunta</h3>
+          <p>
+            Apresentar diferentes propostas para reduzir o desperdício
+            e pedir que o grupo escolha duas, utilizando critérios
+            e construindo uma justificativa coletiva.
+          </p>
+        </div>
+
+        <div class="card clickable" onclick="wrongRoom4()">
+          <h3>ARQUIVO 4 · Um apresentador definido</h3>
+          <p>Escolher antecipadamente quem falará pelo grupo.</p>
+        </div>
+
+      </div>
+
+      <div id="r4wrong" class="feedback error">
+        <h3>⚠ COLABORAÇÃO NÃO RESTAURADA</h3>
+        <p>
+          Alterar o número de participantes, o tempo ou definir
+          quem apresentará pode modificar a organização da atividade.
+        </p>
+        <strong>
+          Mas por que esses estudantes precisam uns dos outros
+          para realizar a tarefa?
+        </strong>
+      </div>
+
+      <div id="r4success" class="feedback success">
+        <h3>🔧 RECONFIGURANDO A TAREFA...</h3>
+
+        <div class="box red">
+          <strong>ANTES</strong>
+          <p>
+            “Conversem sobre formas de reduzir o desperdício de água.”
+          </p>
+        </div>
+
+        <div class="box green">
+          <strong>DEPOIS</strong>
+          <p>
+            Analisem quatro propostas para reduzir o desperdício de água.
+          </p>
+          <p>
+            Escolham apenas duas utilizando os critérios
+            de <strong>impacto e viabilidade</strong>.
+          </p>
+          <p>
+            Registrem três argumentos que sustentem a decisão.
+          </p>
+          <p>
+            <strong>Todos deverão estar preparados para explicar a escolha.</strong>
+          </p>
+        </div>
+
+        <div class="flow">
+          <span>ANALISAR</span>
+          <div class="arrow">→</div>
+          <span>COMPARAR</span>
+          <div class="arrow">→</div>
+          <span>NEGOCIAR</span>
+          <div class="arrow">→</div>
+          <span>DECIDIR</span>
+          <div class="arrow">→</div>
+          <span>JUSTIFICAR</span>
+        </div>
+
+        <div class="box blue">
+          <strong>COLABORAÇÃO RESTAURADA</strong>
+          <p>
+            Estar em grupo não é suficiente.
+            A colaboração acontece quando a tarefa cria uma razão para
+            <strong>pensar, decidir ou produzir com o outro</strong>.
+          </p>
+        </div>
+
+        <div class="key-box">
+          🔑 CHAVE 04 RECUPERADA
+          <strong>INTERAÇÃO</strong>
+        </div>
+
+        <div class="box yellow">
+          <strong>REGISTRO RECUPERADO</strong>
+          <p>
+            “A ferramenta cria a sala.
+            O planejamento cria as condições para a colaboração.”
+          </p>
+        </div>
+
+        <div class="system">
+          <span class="warning">[ÚLTIMA PORTA LOCALIZADA]</span><br><br>
+          objetivo_final.pdf<br>
+          evidencias.rec<br>
+          atividade_03.tmp<br>
+          feedback.dat<br>
+          sequencia_CORROMPIDA<br><br>
+          <span class="danger">
+            Todos os componentes foram encontrados.<br>
+            Mas os elementos estão fora de ordem.
+          </span>
+        </div>
+
+        <button class="btn" onclick="goTo('room5')">
+          ACESSAR ÚLTIMA SALA →
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SALA 5
+===================================================== -->
+
+<section id="room5" class="screen">
+  <div class="container">
+    <div class="panel">
+
+      <div class="progress-wrap">
+        <div class="progress-label">FRAGMENTOS RECUPERADOS</div>
+        <div class="progress">
+          <span class="done"></span><span class="done"></span>
+          <span class="done"></span><span class="done"></span><span></span>
+        </div>
+      </div>
+
+      <div class="badge">SALA 5 · O PLANO FRAGMENTADO</div>
+
+      <h2>O último arquivo</h2>
+
+      <div class="system">
+        <span class="warning">[STATUS DO ARQUIVO: 83% RECUPERADO]</span><br>
+        Objetivo localizado.<br>
+        Evidências recuperadas.<br>
+        Estratégias identificadas.<br>
+        Interação restaurada.<br><br>
+        <span class="danger">
+          ÚLTIMO FRAGMENTO: CORROMPIDO.<br>
+          AS ETAPAS DO PERCURSO FORAM EMBARALHADAS.
+        </span>
+      </div>
+
+      <div class="box blue">
+        <strong>OBJETIVO RECUPERADO</strong>
+        <p>
+          Analisar diferentes propostas para melhorar a mobilidade urbana
+          e construir uma solução fundamentada para um problema
+          identificado na comunidade.
+        </p>
+      </div>
+
+      <div class="box yellow">
+        <strong>📄 NOTA DO PLANEJADOR RECUPERADA</strong>
+        <p>
+          “Nenhuma etapa foi colocada aqui por acaso.
+          Para reconstruir o arquivo, descubra
+          <strong>o que cada etapa precisa receber da anterior</strong>.”
+        </p>
+      </div>
+
+      <p class="lead">
+        Clique nos fragmentos <strong>na ordem em que deveriam acontecer</strong>.
+      </p>
+
+      <div class="order-list">
+
+        <div class="order-item" onclick="selectOrder(this,'A')">
+          <div class="file-code">FRAGMENTO A · REVISAO.tmp</div>
+          <strong>REVISAR</strong><br>
+          Os estudantes recebem feedback sobre a proposta elaborada
+          e identificam um aspecto que precisa ser melhorado
+          antes da versão final.
+        </div>
+
+        <div class="order-item" onclick="selectOrder(this,'B')">
+          <div class="file-code">FRAGMENTO B · DECISAO.dat</div>
+          <strong>DECIDIR</strong><br>
+          Em pequenos grupos, os estudantes comparam diferentes alternativas,
+          discutem critérios de viabilidade e decidem qual solução
+          consideram mais adequada.
+        </div>
+
+        <div class="order-item" onclick="selectOrder(this,'C')">
+          <div class="file-code">FRAGMENTO C · PROBLEMA.log</div>
+          <strong>IDENTIFICAR</strong><br>
+          Fotografias, pequenos relatos e dados sobre deslocamento
+          são apresentados. Os estudantes identificam problemas
+          de mobilidade presentes nas situações analisadas.
+        </div>
+
+        <div class="order-item" onclick="selectOrder(this,'D')">
+          <div class="file-code">FRAGMENTO D · PROPOSTA.doc</div>
+          <strong>PRODUZIR</strong><br>
+          Cada grupo transforma a decisão tomada em uma proposta,
+          apresentando a solução escolhida e os argumentos que a sustentam.
+        </div>
+
+        <div class="order-item" onclick="selectOrder(this,'E')">
+          <div class="file-code">FRAGMENTO E · INVESTIGACAO.rec</div>
+          <strong>ANALISAR</strong><br>
+          Os estudantes analisam informações sobre possíveis causas
+          dos problemas identificados e diferentes alternativas
+          utilizadas em outros contextos.
+        </div>
+
+        <div class="order-item" onclick="selectOrder(this,'F')">
+          <div class="file-code">FRAGMENTO F · VERSAO_FINAL.exe</div>
+          <strong>DEMONSTRAR</strong><br>
+          Após a revisão, os estudantes apresentam a versão final
+          da proposta e justificam de que maneira ela responde
+          ao problema inicialmente identificado.
+        </div>
+
+      </div>
+
+      <h3>SEQUÊNCIA CONSTRUÍDA</h3>
+
+      <div id="sequenceResult" class="sequence-result">
+        Selecione os seis fragmentos...
+      </div>
+
+      <button class="btn secondary" onclick="checkSequence()">
+        RESTAURAR SEQUÊNCIA
+      </button>
+
+      <button class="btn" onclick="resetSequence()">
+        LIMPAR SEQUÊNCIA
+      </button>
+
+      <div id="r5wrong" class="feedback error">
+        <h3>⚠ SEQUÊNCIA INCONSISTENTE</h3>
+        <p>
+          Não procure simplesmente uma ordem cronológica.
+        </p>
+        <strong>
+          Pergunte: o que precisa acontecer antes
+          para que a próxima ação faça sentido?
+        </strong>
+      </div>
+
+      <div id="r5progression" class="feedback success">
+        <h3>✓ SEQUÊNCIA RESTAURADA</h3>
+
+        <div class="flow">
+          <span>IDENTIFICAR</span>
+          <div class="arrow">→</div>
+          <span>ANALISAR</span>
+          <div class="arrow">→</div>
+          <span>DECIDIR</span>
+          <div class="arrow">→</div>
+          <span>PRODUZIR</span>
+          <div class="arrow">→</div>
+          <span>REVISAR</span>
+          <div class="arrow">→</div>
+          <span>DEMONSTRAR</span>
+        </div>
+
+        <div class="system">
+          <span class="ok">[SEQUÊNCIA RESTAURADA]</span><br>
+          <span class="danger">[ARQUIVO AINDA BLOQUEADO]</span><br><br>
+          “O código não está nos nomes dos arquivos.
+          Está naquilo que muda de uma etapa para outra.”
+        </div>
+
+        <h3>O que esse percurso revela?</h3>
+
+        <div class="grid">
+          <div class="card clickable" onclick="wrongProgression()">REPETIÇÃO</div>
+          <div class="card clickable" onclick="wrongProgression()">COMPETIÇÃO</div>
+          <div class="card clickable" onclick="correctProgression()">PROGRESSÃO</div>
+          <div class="card clickable" onclick="wrongProgression()">TECNOLOGIA</div>
+        </div>
+
+        <div id="progWrong" class="feedback error">
+          <h3>⚠ ARQUIVO AINDA BLOQUEADO</h3>
+          <p>
+            Observe como cada etapa prepara o estudante para realizar
+            uma ação posterior mais complexa.
+          </p>
+        </div>
+      </div>
+
+      <div id="r5success" class="hidden">
+
+        <div class="box green center">
+          <h3>RESTAURANDO ARQUIVO...</h3>
+          <div class="restore-bar">
+            <div id="restoreFill" class="restore-fill"></div>
+          </div>
+          <p id="restoreText"><strong>83%</strong></p>
+        </div>
+
+        <div id="restoredContent" class="hidden">
+
+          <div class="box green center">
+            <h3>✓ PLANO RECUPERADO · 100%</h3>
+            <p>
+              O planejamento não era uma coleção de atividades.
+            </p>
+            <p>
+              Cada experiência preparava o estudante para realizar
+              uma ação mais complexa na etapa seguinte.
+            </p>
+          </div>
+
+          <div class="big-reveal">
+            APRENDER É PERCORRER UM CAMINHO.
+          </div>
+
+          <div class="key-box">
+            🔑 CHAVE 05 RECUPERADA
+            <strong>PROGRESSÃO</strong>
+          </div>
+
+          <h3 class="center">INVENTÁRIO COMPLETO</h3>
+
+          <div class="inventory">
+            <div class="key recovered">🔑 AÇÃO</div>
+            <div class="key recovered">🔑 EVIDÊNCIA</div>
+            <div class="key recovered">🔑 INTENCIONALIDADE</div>
+            <div class="key recovered">🔑 INTERAÇÃO</div>
+            <div class="key recovered">🔑 PROGRESSÃO</div>
+          </div>
+
+          <div class="system">
+            <span class="danger">[ACESSO AINDA BLOQUEADO]</span><br><br>
+            Todos os fragmentos foram recuperados.<br>
+            Todas as cinco chaves foram encontradas.<br><br>
+            <strong>MAS AS CHAVES NÃO SÃO UMA SENHA.</strong><br>
+            Elas são pistas.<br><br>
+            <span class="warning">PROTOCOLO FINAL NECESSÁRIO.</span>
+          </div>
+
+          <button class="btn" onclick="goTo('protocol')">
+            ACESSAR PROTOCOLO FINAL →
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     PROTOCOLO FINAL
+===================================================== -->
+
+<section id="protocol" class="screen">
+  <div class="container">
+    <div class="panel center">
+
+      <div class="badge">PROTOCOLO FINAL</div>
+
+      <h2>O que conecta as cinco chaves?</h2>
+
+      <p class="lead">
+        Você chegou à última etapa.
+      </p>
+
+      <div class="final-keys">
+        <div class="final-key">🔑<br><br>AÇÃO</div>
+        <div class="final-key">🔑<br><br>EVIDÊNCIA</div>
+        <div class="final-key">🔑<br><br>INTENCIONALIDADE</div>
+        <div class="final-key">🔑<br><br>INTERAÇÃO</div>
+        <div class="final-key">🔑<br><br>PROGRESSÃO</div>
+      </div>
+
+      <div class="box yellow">
+        <strong>As cinco chaves não formam uma senha.</strong>
+        <p>
+          Elas revelam princípios que ajudam a transformar
+          atividades isoladas em um percurso de aprendizagem coerente.
+        </p>
+      </div>
+
+      <p class="lead">
+        Durante toda a missão, você tentou reconstruir um planejamento.
+      </p>
+
+      <p class="lead">
+        Mas existe uma última informação que o sistema ainda não revelou.
+      </p>
+
+      <button class="btn secondary" onclick="revealFinal()">
+        REVELAR ARQUIVO FINAL
+      </button>
+
+      <div id="finalReveal" class="hidden">
+
+        <div class="system" style="margin-top:35px;text-align:left;">
+          <span class="ok">[ARQUIVO ORIGINAL LOCALIZADO]</span><br>
+          Comparando estrutura recuperada...<br>
+          Verificando ações... OK<br>
+          Verificando evidências... OK<br>
+          Verificando estratégias... OK<br>
+          Verificando interação... OK<br>
+          Verificando progressão... OK<br><br>
+          <span class="warning">CORRESPONDÊNCIA ENCONTRADA.</span>
+        </div>
+
+        <p class="big-reveal">
+          O plano que você estava tentando reconstruir...
+          <br><br>
+          <strong>ERA ESTE.</strong>
+        </p>
+
+        <div class="box blue" style="text-align:left;">
+          <h3>Observe o que você acabou de vivenciar:</h3>
+
+          <p>
+            <strong>AÇÃO</strong> — você precisou analisar informações,
+            tomar decisões e resolver problemas para avançar.
+          </p>
+
+          <p>
+            <strong>EVIDÊNCIA</strong> — suas escolhas tornaram visível
+            aquilo que você estava compreendendo.
+          </p>
+
+          <p>
+            <strong>INTENCIONALIDADE</strong> — cada desafio possuía
+            uma função no percurso; os enigmas não estavam ali apenas
+            para tornar o jogo divertido.
+          </p>
+
+          <p>
+            <strong>INTERAÇÃO</strong> — você analisou situações em que
+            aprender com o outro precisava possuir uma razão pedagógica.
+          </p>
+
+          <p>
+            <strong>PROGRESSÃO</strong> — os desafios foram organizados
+            para que as descobertas anteriores ajudassem a compreender
+            os problemas seguintes.
+          </p>
+        </div>
+
+        <div class="box yellow">
+          <strong>BASTIDORES PEDAGÓGICOS</strong>
+          <p>
+            O próprio Escape Room foi construído a partir de um objetivo,
+            de ações esperadas, de evidências, de desafios,
+            de feedbacks e de uma progressão.
+          </p>
+        </div>
+
+        <p class="big-reveal">
+          VOCÊ NÃO APENAS ESTUDOU
+          UM PLANEJAMENTO QUE ENGAJA.
+          <br><br>
+          <strong>VOCÊ ACABOU DE VIVENCIAR UM.</strong>
+        </p>
+
+        <button class="btn mustard" onclick="finishMission()">
+          FINALIZAR MISSÃO
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     MISSÃO CONCLUÍDA
+===================================================== -->
+
+<section id="completed" class="screen">
+  <div class="container">
+    <div class="panel center">
+
+      <div class="lock">🔓</div>
+
+      <div class="badge">MISSÃO CONCLUÍDA</div>
+
+      <h2>O Plano Perdido foi recuperado.</h2>
+
+      <div class="box green">
+        <strong>TEMPO DA MISSÃO</strong>
+        <p id="finalTime" class="final-time">--:--</p>
+      </div>
+
+      <p class="lead">
+        Um planejamento que engaja não nasce da quantidade
+        de ferramentas, metodologias ou atividades utilizadas.
+      </p>
+
+      <div class="box yellow">
+        <h3>Ele nasce da coerência entre as escolhas.</h3>
+      </div>
+
+      <div class="flow">
+        <span>OBJETIVO</span>
+        <div class="arrow">→</div>
+        <span>AÇÃO</span>
+        <div class="arrow">→</div>
+        <span>EVIDÊNCIA</span>
+        <div class="arrow">→</div>
+        <span>EXPERIÊNCIA</span>
+        <div class="arrow">→</div>
+        <span>MEDIAÇÃO</span>
+        <div class="arrow">→</div>
+        <span>FEEDBACK</span>
+        <div class="arrow">→</div>
+        <span>PROGRESSÃO</span>
+      </div>
+
+      <div class="box blue">
+        <strong>
+          A melhor estratégia não é a mais moderna,
+          tecnológica ou divertida.
+        </strong>
+        <p>
+          É aquela que ajuda o estudante a avançar
+          na aprendizagem que desejamos promover.
+        </p>
+      </div>
+
+      <h3 style="margin-top:30px;">PLANOS QUE ENGAJAM</h3>
+
+      <p>
+        Planejamento, intencionalidade e aprendizagem.
+      </p>
+
+      <button class="btn secondary" onclick="restartGame()">
+        ↻ REINICIAR EXPERIÊNCIA
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<script>
+
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
+
+const GAME_SECONDS = 30 * 60;
+
+let timerInterval = null;
+let missionStart = null;
+let missionFinished = false;
+let remainingSeconds = GAME_SECONDS;
+
+let room2Attempts = 0;
+
+let repairChoices = {
+  mission:null,
+  challenge:null,
+  evidence:null
+};
+
+let sequence = [];
+
+const sequenceNames = {
+  A:"REVISAR",
+  B:"DECIDIR",
+  C:"IDENTIFICAR",
+  D:"PRODUZIR",
+  E:"ANALISAR",
+  F:"DEMONSTRAR"
+};
+
+/* =====================================================
+   NAVEGAÇÃO
+===================================================== */
+
+function goTo(id){
+
+  document.querySelectorAll(".screen").forEach(screen=>{
+    screen.classList.remove("active");
+  });
+
+  const target = document.getElementById(id);
+
+  if(target){
+    target.classList.add("active");
+    window.scrollTo(0,0);
+  }
+}
+
+/* =====================================================
+   CRONÔMETRO
+===================================================== */
+
+function startMission(){
+
+  missionFinished = false;
+  missionStart = Date.now();
+  remainingSeconds = GAME_SECONDS;
+
+  const timer = document.getElementById("gameTimer");
+  timer.classList.add("visible");
+
+  updateTimerDisplay();
+
+  if(timerInterval){
+    clearInterval(timerInterval);
+  }
+
+  timerInterval = setInterval(updateTimer,1000);
+
+  goTo("mission");
+}
+
+function updateTimer(){
+
+  if(!missionStart || missionFinished){
+    return;
+  }
+
+  const elapsed = Math.floor((Date.now() - missionStart) / 1000);
+  remainingSeconds = Math.max(0, GAME_SECONDS - elapsed);
+
+  updateTimerDisplay();
+
+  if(remainingSeconds <= 0){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function updateTimerDisplay(){
+
+  const timer = document.getElementById("gameTimer");
+  const value = document.getElementById("timerValue");
+
+  timer.classList.remove("warning","urgent","expired");
+
+  if(remainingSeconds <= 0){
+    value.textContent = "TEMPO ESGOTADO";
+    timer.classList.add("expired");
+    return;
+  }
+
+  const minutes = Math.floor(remainingSeconds / 60);
+  const seconds = remainingSeconds % 60;
+
+  value.textContent =
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0");
+
+  if(remainingSeconds <= 5 * 60){
+    timer.classList.add("urgent");
+  }else if(remainingSeconds <= 10 * 60){
+    timer.classList.add("warning");
+  }
+}
+
+function finishMission(){
+
+  missionFinished = true;
+
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  let usedSeconds;
+
+  if(missionStart){
+    usedSeconds = Math.floor((Date.now() - missionStart) / 1000);
+  }else{
+    usedSeconds = 0;
+  }
+
+  const minutes = Math.floor(usedSeconds / 60);
+  const seconds = usedSeconds % 60;
+
+  document.getElementById("finalTime").textContent =
+    String(minutes).padStart(2,"0") +
+    " min " +
+    String(seconds).padStart(2,"0") +
+    " s";
+
+  document.getElementById("gameTimer").classList.remove("visible");
+
+  goTo("completed");
+}
+
+/* =====================================================
+   SALA 1
+===================================================== */
+
+function wrongRoom1(){
+
+  document.getElementById("r1wrong").classList.add("show");
+}
+
+function correctRoom1(){
+
+  document.getElementById("r1wrong").classList.remove("show");
+  document.getElementById("r1correct").classList.add("show");
+
+  document.getElementById("r1correct").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+
+/* =====================================================
+   SALA 2
+===================================================== */
+
+function checkRoom2(){
+
+  const code = document.getElementById("code2").value.trim();
+
+  if(code === "296"){
+
+    document.getElementById("r2wrong").classList.remove("show");
+    document.getElementById("r2hint2").classList.remove("show");
+    document.getElementById("r2correct").classList.add("show");
+
+    document.getElementById("r2correct").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  }else{
+
+    room2Attempts++;
+
+    document.getElementById("r2correct").classList.remove("show");
+    document.getElementById("r2wrong").classList.add("show");
+
+    if(room2Attempts >= 2){
+      document.getElementById("r2hint2").classList.add("show");
+    }
+  }
+}
+
+/* =====================================================
+   SALA 3 — INVESTIGAÇÃO
+===================================================== */
+
+function wrongExperiment(){
+
+  document.getElementById("r3wrong1").classList.add("show");
+}
+
+function selectSabotaged(){
+
+  document.getElementById("r3wrong1").classList.remove("show");
+  document.getElementById("diagnosis").classList.remove("hidden");
+
+  document.getElementById("diagnosis").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+
+function wrongDiagnosis(){
+
+  document.getElementById("diagWrong").classList.add("show");
+}
+
+function correctDiagnosis(){
+
+  document.getElementById("diagWrong").classList.remove("show");
+  document.getElementById("repair").classList.remove("hidden");
+
+  document.getElementById("repair").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+
+/* =====================================================
+   SALA 3 — REPARAÇÃO
+===================================================== */
+
+function chooseRepair(group,value,button){
+
+  repairChoices[group] = value;
+
+  const container = document.querySelector(
+    '.repair-group[data-group="' + group + '"]'
+  );
+
+  container.querySelectorAll(".option").forEach(option=>{
+    option.classList.remove("selected");
+  });
+
+  button.classList.add("selected");
+}
+
+function checkRepair(){
+
+  const correct =
+    repairChoices.mission === 2 &&
+    repairChoices.challenge === 3 &&
+    repairChoices.evidence === 3;
+
+  if(correct){
+
+    document.getElementById("repairWrong").classList.remove("show");
+    document.getElementById("repairCorrect").classList.add("show");
+
+    document.getElementById("repairCorrect").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  }else{
+
+    document.getElementById("repairCorrect").classList.remove("show");
+    document.getElementById("repairWrong").classList.add("show");
+  }
+}
+
+function checkRoom3(){
+
+  const code = document.getElementById("code3").value.trim();
+
+  if(code === "7"){
+
+    document.getElementById("r3codeWrong").classList.remove("show");
+    document.getElementById("r3success").classList.add("show");
+
+    document.getElementById("r3success").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  }else{
+
+    document.getElementById("r3success").classList.remove("show");
+    document.getElementById("r3codeWrong").classList.add("show");
+  }
+}
+
+/* =====================================================
+   SALA 4
+===================================================== */
+
+function wrongRoom4(){
+
+  document.getElementById("r4wrong").classList.add("show");
+}
+
+function correctRoom4(){
+
+  document.getElementById("r4wrong").classList.remove("show");
+  document.getElementById("r4success").classList.add("show");
+
+  document.getElementById("r4success").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+
+/* =====================================================
+   SALA 5 — ORDENAR
+===================================================== */
+
+function selectOrder(element,letter){
+
+  if(sequence.includes(letter)){
+    return;
+  }
+
+  sequence.push(letter);
+  element.classList.add("selected");
+
+  updateSequence();
+}
+
+function updateSequence(){
+
+  const result = document.getElementById("sequenceResult");
+
+  if(sequence.length === 0){
+    result.innerHTML = "Selecione os seis fragmentos...";
+    return;
+  }
+
+  result.innerHTML = sequence
+    .map((letter,index)=>{
+      return "<strong>" +
+        (index + 1) +
+        ".</strong> " +
+        sequenceNames[letter];
+    })
+    .join(" &nbsp; → &nbsp; ");
+}
+
+function resetSequence(){
+
+  sequence = [];
+
+  document.querySelectorAll(".order-item").forEach(item=>{
+    item.classList.remove("selected");
+  });
+
+  document.getElementById("r5wrong").classList.remove("show");
+  document.getElementById("r5progression").classList.remove("show");
+
+  updateSequence();
+}
+
+function checkSequence(){
+
+  const correct = ["C","E","B","D","A","F"];
+
+  if(sequence.length !== 6){
+
+    document.getElementById("r5wrong").classList.add("show");
+    return;
+  }
+
+  const success = correct.every((item,index)=>{
+    return sequence[index] === item;
+  });
+
+  if(success){
+
+    document.getElementById("r5wrong").classList.remove("show");
+    document.getElementById("r5progression").classList.add("show");
+
+    document.getElementById("r5progression").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  }else{
+
+    document.getElementById("r5wrong").classList.add("show");
+  }
+}
+
+function wrongProgression(){
+
+  document.getElementById("progWrong").classList.add("show");
+}
+
+function correctProgression(){
+
+  document.getElementById("progWrong").classList.remove("show");
+  document.getElementById("r5success").classList.remove("hidden");
+
+  document.getElementById("r5success").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+
+  setTimeout(()=>{
+    document.getElementById("restoreFill").style.width = "100%";
+  },250);
+
+  setTimeout(()=>{
+    document.getElementById("restoreText").innerHTML = "<strong>91%</strong>";
+  },600);
+
+  setTimeout(()=>{
+    document.getElementById("restoreText").innerHTML = "<strong>97%</strong>";
+  },1200);
+
+  setTimeout(()=>{
+    document.getElementById("restoreText").innerHTML = "<strong>100%</strong>";
+    document.getElementById("restoredContent").classList.remove("hidden");
+
+    document.getElementById("restoredContent").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  },1900);
+}
+
+/* =====================================================
+   PROTOCOLO FINAL
+===================================================== */
+
+function revealFinal(){
+
+  document.getElementById("finalReveal").classList.remove("hidden");
+
+  document.getElementById("finalReveal").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
+
+/* =====================================================
+   REINICIAR
+===================================================== */
+
+function restartGame(){
+
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  missionStart = null;
+  missionFinished = false;
+  remainingSeconds = GAME_SECONDS;
+  room2Attempts = 0;
+
+  repairChoices = {
+    mission:null,
+    challenge:null,
+    evidence:null
+  };
+
+  sequence = [];
+
+  document.querySelectorAll(".feedback").forEach(el=>{
+    el.classList.remove("show");
+  });
+
+  document.querySelectorAll(".order-item").forEach(el=>{
+    el.classList.remove("selected");
+  });
+
+  document.querySelectorAll(".option").forEach(el=>{
+    el.classList.remove("selected");
+  });
+
+  [
+    "diagnosis",
+    "repair",
+    "r5success",
+    "restoredContent",
+    "finalReveal"
+  ].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      el.classList.add("hidden");
+    }
+  });
+
+  document.getElementById("restoreFill").style.width = "0";
+  document.getElementById("restoreText").innerHTML = "<strong>83%</strong>";
+
+  document.getElementById("code2").value = "";
+  document.getElementById("code3").value = "";
+
+  document.getElementById("gameTimer").className = "";
+  document.getElementById("timerValue").textContent = "30:00";
+
+  updateSequence();
+
+  goTo("opening");
+}
+
+</script>
+
+</body>
+</html>
